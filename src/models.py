@@ -9,6 +9,9 @@ class User(db.Model):
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
+    Favorite_character = db.relationship(Favorite_character)
+    Favorite_planet = db.relationship(Favorite_planet)
+
     def __repr__(self):
         return '<User %r>' % self.email
 
@@ -23,6 +26,8 @@ class Planets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
     population = db.Column(db.String(80), unique=False, nullable=False)
+
+    Favorite_planet = db.relationship(Favorite_planet)
 
     def __repr__(self):
         return '<Planets %r>' % self.name
@@ -41,6 +46,8 @@ class Characters(db.Model):
     age = db.Column(db.String(100), unique=False, nullable=False)
     weight = db.Column(db.String(100), unique=False, nullable=False)
 
+    Favorite_character = db.relationship(Favorite_character)
+
     def __repr__(self):
         return '<Characters %r>' % self.name
     def serialize(self):
@@ -54,11 +61,8 @@ class Characters(db.Model):
 class Favorite_character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     favorite_character = db.Column(db.Integer, db.ForeignKey('characters.id'), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
-    user = db.relationship("User", backref = db.backref('favorite_character', lazy=True))
-    character = db.relationship("Characters", backref = db.backref('favorite_character', lazy=True))
-
     def __repr__(self):
         return '<Favorite_character %r>' % self.id
     
@@ -72,11 +76,8 @@ class Favorite_character(db.Model):
 class Favorite_planet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     favorite_planet = db.Column(db.Integer, db.ForeignKey('planets.id'), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
-    
-    user = db.relationship("User", backref = db.backref('favorite_planet', lazy=True))
-    planet = db.relationship("Planets", backref = db.backref('favorite_planet', lazy=True))
-    
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+        
 
     def __repr__(self):
         return '<Favorite_planet %r>' % self.id
